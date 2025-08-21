@@ -4,8 +4,7 @@
 
 此專案的靈感來源於一個功能強大的 Python 桌面應用程式，並旨在將其核心功能移植到行動裝置上，同時利用 Android 平台的優勢提供更佳的使用者體驗。
 
-![應用程式截圖](https://raw.githubusercontent.com/Yen-learn-java/MopsDownloader/master/art/screenshot.png)
-_（請替換為您自己的應用程式截圖 URL）_
+![應用程式截圖](https://github.com/YenHsinCHEN/MopsDownloader/blob/3c7eb3a5f53c4b5786335b6b251f540816f4175f/Screenshot_20250821_230400.png)
 
 ---
 
