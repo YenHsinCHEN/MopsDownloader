@@ -6,7 +6,7 @@
 
 ![應用程式截圖](https://github.com/YenHsinCHEN/MopsDownloader/blob/3c7eb3a5f53c4b5786335b6b251f540816f4175f/Screenshot_20250821_230400.png)
 
----
+-
 
 ## ✨ 核心功能
 
