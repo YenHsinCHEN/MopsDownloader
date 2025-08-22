@@ -6,7 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap // 【【【新增 import】】】
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.google.gson.Gson
@@ -43,10 +43,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val settingsManager = SettingsManager(application)
 
     private val workId = MutableLiveData<UUID>()
-
-    // 【【【【【 以下是唯一的修改點 】】】】】
-    // 不再使用 Transformations.switchMap(workId)
-    // 而是直接在 workId 上呼叫 .switchMap 擴充函式
     val workInfo: LiveData<WorkInfo> = workId.switchMap { id ->
         workManager.getWorkInfoByIdLiveData(id)
     }
@@ -108,17 +104,35 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             val tasks = buildTasks(currentState)
             if (tasks.isEmpty()) { addLog("提示：沒有選擇任何要下載的檔案"); return@launch }
-            if (tasks.size > 30) {
-                addLog("錯誤：單次下載上限為 30 個檔案，您已選擇 ${tasks.size} 個。")
-                addLog("請減少勾選項目後再試。")
-                return@launch
+
+            val totalTasks = tasks.size
+
+            val (delayMin, delayMax) = when {
+                totalTasks in 1..5 -> {
+                    addLog("提示：啟用快速下載模式 (1-2秒/個)。")
+                    1000L to 2000L
+                }
+                totalTasks in 6..15 -> {
+                    addLog("提示：啟用常規下載模式 (3-5秒/個)。")
+                    3000L to 5000L
+                }
+                totalTasks in 16..25 -> {
+                    addLog("提示：啟用慢速下載模式 (4-7秒/個)。")
+                    4000L to 7000L
+                }
+                else -> { // totalTasks > 25
+                    addLog("錯誤：單次下載上限為 25 個檔案，您已選擇 $totalTasks 個。")
+                    addLog("請減少勾選項目後再試。")
+                    return@launch
+                }
             }
-            val (delayMin, delayMax) = getDelayStrategy(tasks.size)
+
             tasks.sortWith(
                 compareBy<DownloadTask> { it.type }
                     .thenByDescending { it.year.toInt() }
                     .thenBy { it.season?.toIntOrNull() ?: 5 }
             )
+
             val tasksJson = Gson().toJson(tasks)
             val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(workDataOf(
@@ -169,15 +183,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         return tasks
-    }
-
-    private fun getDelayStrategy(totalTasks: Int): Pair<Long, Long> {
-        return if (totalTasks > 16) {
-            addLog("提示：任務數 > 16，啟用慢速下載模式 (5-7秒/個)。")
-            5000L to 7000L
-        } else {
-            addLog("提示：啟用常規下載模式 (3-5秒/個)。")
-            3000L to 5000L
-        }
     }
 }

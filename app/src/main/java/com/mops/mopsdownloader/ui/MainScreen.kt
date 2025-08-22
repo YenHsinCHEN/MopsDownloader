@@ -43,6 +43,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 
 // MainScreen 和所有 UI Composable 函式都完全不變
 @OptIn(ExperimentalMaterial3Api::class)
@@ -195,7 +197,16 @@ fun GeneralSettings(uiState: MainUiState, onStockCodeChange: (String) -> Unit, o
         onResult = { uri -> uri?.let { onSaveDirectory(it) } }
     )
     Column {
-        OutlinedTextField(value = uiState.stockCode, onValueChange = onStockCodeChange, label = { Text("股票代號 (單一)") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(
+            value = uiState.stockCode,
+            onValueChange = onStockCodeChange,
+            label = { Text("股票代號 (單一)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            )
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("儲存位置: ", fontWeight = FontWeight.Bold)
