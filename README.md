@@ -3,8 +3,11 @@
 這是一個基於 Kotlin 和 Jetpack Compose 開發的原生 Android 應用程式，旨在提供一個現代化、易於使用的介面，用於批次下載台灣公開資訊觀測站 (MOPS) 的財務報表與股東會年報。
 
 此專案的靈感來源於一個功能強大的 Python 桌面應用程式，並旨在將其核心功能移植到行動裝置上，同時利用 Android 平台的優勢提供更佳的使用者體驗。
-![應用程式截圖](https://github.com/YenHsinCHEN/MopsDownloader/blob/3c7eb3a5f53c4b5786335b6b251f540816f4175f/Screenshot_20250821_230400.png)
 
+[應用程式介面截圖]
+<p align="center">
+  <img src="https://github.com/YenHsinCHEN/MopsDownloader/blob/3c7eb3a5f53c4b5786335b6b251f540816f4175f/Screenshot_20250821_230400.png" width="300">
+</p>
 ---
 
 ## ✨ 核心功能
