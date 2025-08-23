@@ -1,8 +1,10 @@
 # MOPS 批次下載工具 (Android App)
 
-這是一個基於 Kotlin 和 Jetpack Compose 開發的原生 Android 應用程式，旨在提供一個現代化、易於使用的介面，用於批次下載台灣公開資訊觀測站 (MOPS) 的財務報表與股東會年報。
+這是一個基於 Kotlin 和 Jetpack Compose 開發的原生 Android
+應用程式，旨在提供一個現代化、易於使用的介面，用於批次下載台灣公開資訊觀測站 (MOPS) 的財務報表與股東會年報。
 
-此專案的靈感來源於一個功能強大的 Python 桌面應用程式，並旨在將其核心功能移植到行動裝置上，同時利用 Android 平台的優勢提供更佳的使用者體驗。
+此專案的靈感來源於一個功能強大的 Python 桌面應用程式，並旨在將其核心功能移植到行動裝置上，同時利用
+Android 平台的優勢提供更佳的使用者體驗。
 
 [應用程式介面截圖]
 <p align="center">
@@ -12,22 +14,23 @@
 
 ## ✨ 核心功能
 
-*   **獨立批次選擇**: 財務報表與股東會年報擁有完全獨立的年份選擇區塊，財報年份可展開勾選季度，實現精準的批次任務設定。
-*   **智慧下載策略**:
-    *   **多層級延遲**: 根據任務數量（1-5, 6-15, 16-25）自動採用 1-7 秒不等的隨機延遲策略，有效避免觸發反爬蟲機制。
-    *   **下載上限**: 單次任務上限為 25 個檔案，超過時會提示使用者，保護網站伺服器與使用者 IP 安全。
-*   **有序的任務佇列**: 所有下載任務會自動排序，確保按「財報 -> 年報」、「年份新 -> 舊」、「季度小 -> 大」的順序執行，方便管理。
-*   **可靠的背景下載**:
-    *   深度整合 **Android WorkManager**，所有下載任務都在背景執行。
-    *   即使 App 切換到背景或被系統回收，下載任務依然能保證完成。
-*   **極致的使用者體驗**:
-    *   **持久化儲存位置**: 只需設定一次儲存資料夾，App 就會透過 `DataStore` 記住您的選擇。
-    *   **完整的任務控制**: 提供帶有確認對話框的「取消下載」功能，防止誤觸。
-    *   **即時進度與日誌**: 在介面上即時顯示下載進度條和詳細的執行日誌。
-    *   **鍵盤最佳化**: 輸入股票代號時自動啟用數字鍵盤。
-*   **完善的資訊架構**:
-    *   整合 **Navigation for Compose**，提供「使用說明」和「版本紀錄」頁面。
-    *   清晰的作者署名與專案識別。
+* **獨立批次選擇**: 財務報表與股東會年報擁有完全獨立的年份選擇區塊，財報年份可展開勾選季度，實現精準的批次任務設定。
+* **智慧下載策略**:
+    * **多層級延遲**: 根據任務數量（1-5, 6-15, 16-25）自動採用 1-7 秒不等的隨機延遲策略，有效避免觸發反爬蟲機制。
+    * **下載上限**: 單次任務上限為 25 個檔案，超過時會提示使用者，保護網站伺服器與使用者 IP 安全。
+* **有序的任務佇列**: 所有下載任務會自動排序，確保按「財報 -> 年報」、「年份新 -> 舊」、「季度小 ->
+  大」的順序執行，方便管理。
+* **可靠的背景下載**:
+    * 深度整合 **Android WorkManager**，所有下載任務都在背景執行。
+    * 即使 App 切換到背景或被系統回收，下載任務依然能保證完成。
+* **極致的使用者體驗**:
+    * **持久化儲存位置**: 只需設定一次儲存資料夾，App 就會透過 `DataStore` 記住您的選擇。
+    * **完整的任務控制**: 提供帶有確認對話框的「取消下載」功能，防止誤觸。
+    * **即時進度與日誌**: 在介面上即時顯示下載進度條和詳細的執行日誌。
+    * **鍵盤最佳化**: 輸入股票代號時自動啟用數字鍵盤。
+* **完善的資訊架構**:
+    * 整合 **Navigation for Compose**，提供「使用說明」和「版本紀錄」頁面。
+    * 清晰的作者署名與專案識別。
 
 ---
 
@@ -35,35 +38,38 @@
 
 本專案採用了 Google 推薦的現代 Android 開發技術棧 (Modern Android Development, MAD)：
 
-*   **語言**: [Kotlin](https://kotlinlang.org/)
-*   **UI 框架**: [Jetpack Compose](https://developer.android.com/jetpack/compose)
-*   **架構**: MVVM (Model-View-ViewModel)
-*   **非同步處理**: [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
-*   **背景任務**: [Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
-*   **頁面導航**: [Navigation for Compose](https://developer.android.com/jetpack/compose/navigation)
-*   **資料持久化**: [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) (用於儲存設定)
-*   **網路請求**: [Retrofit](https://square.github.io/retrofit/)
-*   **HTML 解析**: [Jsoup](https://jsoup.org/)
-*   **資料序列化**: [Gson](https://github.com/google/gson)
+* **語言**: [Kotlin](https://kotlinlang.org/)
+* **UI 框架**: [Jetpack Compose](https://developer.android.com/jetpack/compose)
+* **架構**: MVVM (Model-View-ViewModel)
+* **非同步處理**: [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+* **背景任務
+  **: [Android WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
+* **頁面導航**: [Navigation for Compose](https://developer.android.com/jetpack/compose/navigation)
+* **資料持久化
+  **: [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) (
+  用於儲存設定)
+* **網路請求**: [Retrofit](https://square.github.io/retrofit/)
+* **HTML 解析**: [Jsoup](https://jsoup.org/)
+* **資料序列化**: [Gson](https://github.com/google/gson)
 
 ---
 
-
 ## 🚀 如何建置
 
-1.  使用 Git Clone 此專案：
-    ```bash
-    git clone https://github.com/YenHsinCHEN/MopsDownloader.git
-    ```
-2.  使用最新版的 Android Studio 打開專案。
-3.  等待 Gradle 同步完成所有依賴。
-4.  點擊 "Run 'app'" 按鈕即可在本機模擬器或實體裝置上運行。
+1. 使用 Git Clone 此專案：
+   ```bash
+   git clone https://github.com/YenHsinCHEN/MopsDownloader.git
+   ```
+2. 使用最新版的 Android Studio 打開專案。
+3. 等待 Gradle 同步完成所有依賴。
+4. 點擊 "Run 'app'" 按鈕即可在本機模擬器或實體裝置上運行。
 
 ---
 
 ## 📝 開發歷程與致謝
 
-這個專案是我從一個 Python GUI 應用程式完整遷移到原生 Android App 的學習紀錄。整個過程涵蓋了從 UI 設計、網路爬蟲邏輯重寫，到背景任務處理、資料持久化和現代 App 架構的實踐。
+這個專案是我從一個 Python GUI 應用程式完整遷移到原生 Android App 的學習紀錄。整個過程涵蓋了從 UI
+設計、網路爬蟲邏輯重寫，到背景任務處理、資料持久化和現代 App 架構的實踐。
 
 特別感謝 [Gemini](https://gemini.google.com/) 在整個開發過程中提供的指導與程式碼協助。
 

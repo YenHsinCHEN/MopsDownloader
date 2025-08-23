@@ -121,7 +121,9 @@ fun MainScreenContent(
                     IconButton(onClick = { menuExpanded = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "更多選項")
                     }
-                    DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false }) {
                         DropdownMenuItem(
                             text = { Text("使用說明") },
                             onClick = {
@@ -148,9 +150,16 @@ fun MainScreenContent(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
-            GeneralSettings(uiState = uiState, onStockCodeChange = onStockCodeChange, onSaveDirectory = onSaveDirectory)
+            GeneralSettings(
+                uiState = uiState,
+                onStockCodeChange = onStockCodeChange,
+                onSaveDirectory = onSaveDirectory
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 FinancialReportSettings(
                     modifier = Modifier.weight(1f),
                     isChecked = uiState.isFinancialChecked,
@@ -173,9 +182,12 @@ fun MainScreenContent(
                 onCancel = onShowCancelDialog
             )
             Spacer(modifier = Modifier.height(8.dp))
-            if(uiState.isDownloading) {
+            if (uiState.isDownloading) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                Text(uiState.currentProgress, modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(
+                    uiState.currentProgress,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
             LogPanel(
@@ -184,14 +196,21 @@ fun MainScreenContent(
                 onClearLogs = onClearLogs
             )
             if (uiState.showCancelConfirmDialog) {
-                CancelConfirmDialog(onConfirm = onCancelDownloads, onDismiss = onDismissCancelDialog)
+                CancelConfirmDialog(
+                    onConfirm = onCancelDownloads,
+                    onDismiss = onDismissCancelDialog
+                )
             }
         }
     }
 }
 
 @Composable
-fun GeneralSettings(uiState: MainUiState, onStockCodeChange: (String) -> Unit, onSaveDirectory: (Uri) -> Unit) {
+fun GeneralSettings(
+    uiState: MainUiState,
+    onStockCodeChange: (String) -> Unit,
+    onSaveDirectory: (Uri) -> Unit
+) {
     val directoryPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocumentTree(),
         onResult = { uri -> uri?.let { onSaveDirectory(it) } }
@@ -223,7 +242,12 @@ fun GeneralSettings(uiState: MainUiState, onStockCodeChange: (String) -> Unit, o
                     uriString
                 }
             } ?: "尚未選擇"
-            Text(path ?: "N/A", maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+            Text(
+                path ?: "N/A",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { directoryPickerLauncher.launch(null) }) {
                 Text(if (uiState.directoryUri == null) "選擇" else "更改")
@@ -233,7 +257,13 @@ fun GeneralSettings(uiState: MainUiState, onStockCodeChange: (String) -> Unit, o
 }
 
 @Composable
-fun FinancialReportSettings(modifier: Modifier, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit, selections: Map<String, Set<Int>>, onSelectionChange: (String, Int) -> Unit) {
+fun FinancialReportSettings(
+    modifier: Modifier,
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    selections: Map<String, Set<Int>>,
+    onSelectionChange: (String, Int) -> Unit
+) {
     val years = (LocalDate.now().year downTo LocalDate.now().year - 9).map { it.toString() }
     Column(modifier = modifier.fillMaxHeight()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -255,23 +285,46 @@ fun FinancialReportSettings(modifier: Modifier, isChecked: Boolean, onCheckedCha
 }
 
 @Composable
-fun YearItemWithQuarters(year: String, selectedQuarters: Set<Int>, onQuarterSelected: (Int) -> Unit, enabled: Boolean) {
+fun YearItemWithQuarters(
+    year: String,
+    selectedQuarters: Set<Int>,
+    onQuarterSelected: (Int) -> Unit,
+    enabled: Boolean
+) {
     var expanded by remember { mutableStateOf(false) }
-    Card(modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth().clickable(
-        enabled = enabled,
-        onClick = { expanded = !expanded }
-    )) {
+    Card(
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .fillMaxWidth()
+            .clickable(
+                enabled = enabled,
+                onClick = { expanded = !expanded }
+            )) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                val textColor = if(enabled) LocalContentColor.current else Color.Gray
-                Text(year, modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, color = textColor)
-                Icon(if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, contentDescription = "Expand", tint = textColor)
+                val textColor = if (enabled) LocalContentColor.current else Color.Gray
+                Text(
+                    year,
+                    modifier = Modifier.weight(1f),
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
+                )
+                Icon(
+                    if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Expand",
+                    tint = textColor
+                )
             }
             AnimatedVisibility(visible = expanded) {
-                Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.SpaceAround) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
                     (1..4).forEach { quarter ->
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            val textColor = if(enabled) LocalContentColor.current else Color.Gray
+                            val textColor = if (enabled) LocalContentColor.current else Color.Gray
                             Text("Q$quarter", fontSize = 14.sp, color = textColor)
                             Checkbox(
                                 checked = quarter in selectedQuarters,
@@ -287,7 +340,13 @@ fun YearItemWithQuarters(year: String, selectedQuarters: Set<Int>, onQuarterSele
 }
 
 @Composable
-fun AnnualReportSettings(modifier: Modifier, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit, selections: Map<String, Boolean>, onSelectionChange: (String) -> Unit) {
+fun AnnualReportSettings(
+    modifier: Modifier,
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    selections: Map<String, Boolean>,
+    onSelectionChange: (String) -> Unit
+) {
     val years = (LocalDate.now().year - 1 downTo LocalDate.now().year - 10).map { it.toString() }
     Column(modifier = modifier.fillMaxHeight()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -297,12 +356,21 @@ fun AnnualReportSettings(modifier: Modifier, isChecked: Boolean, onCheckedChange
         Divider()
         LazyColumn {
             items(years) { year ->
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth().clickable(
-                    enabled = isChecked,
-                    onClick = { onSelectionChange(year) }
-                )) {
-                    Checkbox(checked = selections[year] ?: false, onCheckedChange = { _ -> onSelectionChange(year) }, enabled = isChecked)
-                    Text(year, color = if(isChecked) LocalContentColor.current else Color.Gray)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .fillMaxWidth()
+                        .clickable(
+                            enabled = isChecked,
+                            onClick = { onSelectionChange(year) }
+                        )) {
+                    Checkbox(
+                        checked = selections[year] ?: false,
+                        onCheckedChange = { _ -> onSelectionChange(year) },
+                        enabled = isChecked
+                    )
+                    Text(year, color = if (isChecked) LocalContentColor.current else Color.Gray)
                 }
             }
         }
@@ -342,12 +410,22 @@ fun LogPanel(modifier: Modifier, logMessages: List<String>, onClearLogs: () -> U
             coroutineScope.launch { listState.animateScrollToItem(logMessages.size - 1) }
         }
     }
-    Column(modifier = modifier.padding(bottom=8.dp)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    Column(modifier = modifier.padding(bottom = 8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("下載日誌", style = MaterialTheme.typography.titleMedium)
             TextButton(onClick = onClearLogs) { Text("清除日誌") }
         }
-        LazyColumn(state = listState, modifier = Modifier.fillMaxSize().border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp)).padding(8.dp)) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
+                .padding(8.dp)
+        ) {
             items(logMessages) { message ->
                 Text(message, modifier = Modifier.padding(vertical = 2.dp), fontSize = 12.sp)
             }
@@ -362,7 +440,10 @@ fun CancelConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
         title = { Text("確認取消？") },
         text = { Text("目前尚有未完成的下載任務，您確定要全部取消嗎？") },
         confirmButton = {
-            Button(onClick = onConfirm, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
                 Text("確定取消")
             }
         },

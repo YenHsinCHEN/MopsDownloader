@@ -59,29 +59,53 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             .launchIn(viewModelScope)
     }
 
-    fun onStockCodeChange(newCode: String) { _uiState.update { it.copy(stockCode = newCode) } }
-    fun onFinancialCheckedChange(isChecked: Boolean) { _uiState.update { it.copy(isFinancialChecked = isChecked) } }
-    fun onAnnualCheckedChange(isChecked: Boolean) { _uiState.update { it.copy(isAnnualChecked = isChecked) } }
-    fun onShowCancelDialog(show: Boolean) { _uiState.update { it.copy(showCancelConfirmDialog = show) } }
-    fun onDownloadingStateChange(isDownloading: Boolean) { _uiState.update { it.copy(isDownloading = isDownloading) } }
+    fun onStockCodeChange(newCode: String) {
+        _uiState.update { it.copy(stockCode = newCode) }
+    }
+
+    fun onFinancialCheckedChange(isChecked: Boolean) {
+        _uiState.update { it.copy(isFinancialChecked = isChecked) }
+    }
+
+    fun onAnnualCheckedChange(isChecked: Boolean) {
+        _uiState.update { it.copy(isAnnualChecked = isChecked) }
+    }
+
+    fun onShowCancelDialog(show: Boolean) {
+        _uiState.update { it.copy(showCancelConfirmDialog = show) }
+    }
+
+    fun onDownloadingStateChange(isDownloading: Boolean) {
+        _uiState.update { it.copy(isDownloading = isDownloading) }
+    }
 
     fun toggleFinancialSelection(year: String, season: Int) {
         _uiState.update { currentState ->
-            val newSelections: MutableMap<String, Set<Int>> = currentState.financialReportSelections.toMutableMap()
+            val newSelections: MutableMap<String, Set<Int>> =
+                currentState.financialReportSelections.toMutableMap()
             val currentSeasons: MutableSet<Int> = if (newSelections.containsKey(year)) {
                 newSelections.getValue(year).toMutableSet()
             } else {
                 mutableSetOf()
             }
-            if (season in currentSeasons) { currentSeasons.remove(season) } else { currentSeasons.add(season) }
-            if (currentSeasons.isEmpty()) { newSelections.remove(year) } else { newSelections[year] = currentSeasons }
+            if (season in currentSeasons) {
+                currentSeasons.remove(season)
+            } else {
+                currentSeasons.add(season)
+            }
+            if (currentSeasons.isEmpty()) {
+                newSelections.remove(year)
+            } else {
+                newSelections[year] = currentSeasons
+            }
             currentState.copy(financialReportSelections = newSelections)
         }
     }
 
     fun toggleAnnualSelection(year: String) {
         _uiState.update { currentState ->
-            val newSelections: MutableMap<String, Boolean> = currentState.annualReportSelections.toMutableMap()
+            val newSelections: MutableMap<String, Boolean> =
+                currentState.annualReportSelections.toMutableMap()
             val isSelected = newSelections.getOrPut(year) { false }
             newSelections[year] = !isSelected
             currentState.copy(annualReportSelections = newSelections)
@@ -91,8 +115,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun saveDirectoryUri(uri: Uri) {
         viewModelScope.launch {
             val context = getApplication<Application>().applicationContext
-            context.contentResolver.takePersistableUriPermission(uri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            context.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
             settingsManager.saveDirectoryUri(uri.toString())
         }
     }
@@ -100,11 +126,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun startDownload() {
         viewModelScope.launch {
             val currentState = _uiState.value
-            if (currentState.directoryUri == null) { addLog("錯誤：請先選擇儲存資料夾"); return@launch }
-            if (currentState.stockCode.isBlank()) { addLog("錯誤：請輸入股票代號"); return@launch }
+            if (currentState.directoryUri == null) {
+                addLog("錯誤：請先選擇儲存資料夾"); return@launch
+            }
+            if (currentState.stockCode.isBlank()) {
+                addLog("錯誤：請輸入股票代號"); return@launch
+            }
 
             val tasks = buildTasks(currentState)
-            if (tasks.isEmpty()) { addLog("提示：沒有選擇任何要下載的檔案"); return@launch }
+            if (tasks.isEmpty()) {
+                addLog("提示：沒有選擇任何要下載的檔案"); return@launch
+            }
 
             val totalTasks = tasks.size
 
@@ -127,16 +159,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             val tasksJson = Gson().toJson(tasks)
             val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-                .setInputData(workDataOf(
-                    "tasks" to tasksJson,
-                    "directoryUri" to currentState.directoryUri,
-                    "delayMin" to delayMin,
-                    "delayMax" to delayMax
-                ))
+                .setInputData(
+                    workDataOf(
+                        "tasks" to tasksJson,
+                        "directoryUri" to currentState.directoryUri,
+                        "delayMin" to delayMin,
+                        "delayMax" to delayMax
+                    )
+                )
                 .build()
             workManager.enqueueUniqueWork("mopsDownload", ExistingWorkPolicy.REPLACE, workRequest)
             workId.value = workRequest.id
-            _uiState.update { it.copy(isDownloading = true, logMessages = emptyList(), currentProgress = "已提交任務...") }
+            _uiState.update {
+                it.copy(
+                    isDownloading = true,
+                    logMessages = emptyList(),
+                    currentProgress = "已提交任務..."
+                )
+            }
         }
     }
 
@@ -148,10 +188,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(isDownloading = false, currentProgress = "已取消") }
     }
 
-    fun updateProgress(progress: String) { _uiState.update { it.copy(currentProgress = progress) } }
-    fun addLog(log: String) { _uiState.update { currentState ->
-        currentState.copy(logMessages = currentState.logMessages + log)
-    }}
+    fun updateProgress(progress: String) {
+        _uiState.update { it.copy(currentProgress = progress) }
+    }
+
+    fun addLog(log: String) {
+        _uiState.update { currentState ->
+            currentState.copy(logMessages = currentState.logMessages + log)
+        }
+    }
+
     fun clearLogs() {
         if (!_uiState.value.isDownloading) {
             _uiState.update { it.copy(logMessages = emptyList(), currentProgress = "準備就緒") }
@@ -163,14 +209,30 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (currentState.isFinancialChecked) {
             currentState.financialReportSelections.forEach { (year, seasons) ->
                 seasons.forEach { season ->
-                    tasks.add(DownloadTask(coId = currentState.stockCode, year = year, season = season.toString(), type = ReportType.FINANCIAL, fileName = "${currentState.stockCode}_${year}_Q${season}_財報.pdf"))
+                    tasks.add(
+                        DownloadTask(
+                            coId = currentState.stockCode,
+                            year = year,
+                            season = season.toString(),
+                            type = ReportType.FINANCIAL,
+                            fileName = "${currentState.stockCode}_${year}_Q${season}_財報.pdf"
+                        )
+                    )
                 }
             }
         }
         if (currentState.isAnnualChecked) {
             currentState.annualReportSelections.forEach { (year, isSelected) ->
                 if (isSelected) {
-                    tasks.add(DownloadTask(coId = currentState.stockCode, year = year, season = null, type = ReportType.ANNUAL, fileName = "${currentState.stockCode}_${year}_年報.pdf"))
+                    tasks.add(
+                        DownloadTask(
+                            coId = currentState.stockCode,
+                            year = year,
+                            season = null,
+                            type = ReportType.ANNUAL,
+                            fileName = "${currentState.stockCode}_${year}_年報.pdf"
+                        )
+                    )
                 }
             }
         }

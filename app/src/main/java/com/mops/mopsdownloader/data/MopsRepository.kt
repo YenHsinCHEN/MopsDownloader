@@ -31,8 +31,19 @@ class MopsRepository {
         year: String,
         season: String
     ): DownloadResult = withContext(Dispatchers.IO) {
-        val rocYear = try { year.toInt() - 1911 } catch (e: NumberFormatException) { return@withContext DownloadResult.Error("年份格式錯誤") }
-        val queryParams = mapOf("step" to "1", "colorchg" to "1", "co_id" to coId, "year" to rocYear.toString(), "seamon" to season, "mtype" to "A")
+        val rocYear = try {
+            year.toInt() - 1911
+        } catch (e: NumberFormatException) {
+            return@withContext DownloadResult.Error("年份格式錯誤")
+        }
+        val queryParams = mapOf(
+            "step" to "1",
+            "colorchg" to "1",
+            "co_id" to coId,
+            "year" to rocYear.toString(),
+            "seamon" to season,
+            "mtype" to "A"
+        )
 
         try {
             val htmlResponse = apiService.getReportListPage(queryParams)
@@ -46,14 +57,26 @@ class MopsRepository {
                 for (link in links) {
                     val originalHref = link.attr("href")
                     val cleanHref = originalHref.removePrefix("javascript:")
-                    val pattern = Pattern.compile("readfile2\\(\"([^\"]*)\",\"([^\"]*)\",\"([^\"]*)\"\\)")
+                    val pattern =
+                        Pattern.compile("readfile2\\(\"([^\"]*)\",\"([^\"]*)\",\"([^\"]*)\"\\)")
                     val matcher = pattern.matcher(cleanHref)
 
                     if (matcher.find()) {
-                        val kind = matcher.group(1); val foundCoId = matcher.group(2); val filename = matcher.group(3)
+                        val kind = matcher.group(1);
+                        val foundCoId = matcher.group(2);
+                        val filename = matcher.group(3)
                         if (filename != null && (filename.contains("AI1") || filename.contains("AI2"))) {
-                            Log.i("MopsRepository", "[Financial] Found target link: $filename. Executing POST request...")
-                            val postData = mapOf("colorchg" to "1", "step" to "9", "kind" to kind!!, "co_id" to foundCoId!!, "filename" to filename)
+                            Log.i(
+                                "MopsRepository",
+                                "[Financial] Found target link: $filename. Executing POST request..."
+                            )
+                            val postData = mapOf(
+                                "colorchg" to "1",
+                                "step" to "9",
+                                "kind" to kind!!,
+                                "co_id" to foundCoId!!,
+                                "filename" to filename
+                            )
 
                             val postResponse = apiService.postForPdfOrHtml(postData)
                             if (postResponse.isSuccessful && postResponse.body() != null) {
@@ -67,7 +90,8 @@ class MopsRepository {
                                 } else {
                                     val intermediateHtml = responseBody.string()
                                     val intermediateDoc = Jsoup.parse(intermediateHtml)
-                                    val finalPdfLinkElement = intermediateDoc.selectFirst("a[href*='.pdf']")
+                                    val finalPdfLinkElement =
+                                        intermediateDoc.selectFirst("a[href*='.pdf']")
                                     if (finalPdfLinkElement != null) {
                                         val pdfPath = finalPdfLinkElement.attr("href")
                                         val finalUrl = "$baseUrl$pdfPath"
@@ -100,8 +124,18 @@ class MopsRepository {
         coId: String,
         year: String
     ): DownloadResult = withContext(Dispatchers.IO) {
-        val rocYear = try { year.toInt() - 1911 } catch (e: NumberFormatException) { return@withContext DownloadResult.Error("年份格式錯誤") }
-        val queryParams = mapOf("step" to "1", "colorchg" to "1", "co_id" to coId, "year" to rocYear.toString(), "mtype" to "F")
+        val rocYear = try {
+            year.toInt() - 1911
+        } catch (e: NumberFormatException) {
+            return@withContext DownloadResult.Error("年份格式錯誤")
+        }
+        val queryParams = mapOf(
+            "step" to "1",
+            "colorchg" to "1",
+            "co_id" to coId,
+            "year" to rocYear.toString(),
+            "mtype" to "F"
+        )
 
         try {
             val htmlResponse = apiService.getReportListPage(queryParams)
@@ -115,15 +149,27 @@ class MopsRepository {
                 for (link in links) {
                     val originalHref = link.attr("href")
                     val cleanHref = originalHref.removePrefix("javascript:")
-                    val pattern = Pattern.compile("readfile2\\(\"([^\"]*)\",\"([^\"]*)\",\"([^\"]*)\"\\)")
+                    val pattern =
+                        Pattern.compile("readfile2\\(\"([^\"]*)\",\"([^\"]*)\",\"([^\"]*)\"\\)")
                     val matcher = pattern.matcher(cleanHref)
 
                     if (matcher.find()) {
-                        val kind = matcher.group(1); val foundCoId = matcher.group(2); val filename = matcher.group(3)
+                        val kind = matcher.group(1);
+                        val foundCoId = matcher.group(2);
+                        val filename = matcher.group(3)
 
                         if (filename != null && filename.contains("F04")) {
-                            Log.i("MopsRepository", "[Annual] Found target link: $filename. Executing POST request...")
-                            val postData = mapOf("colorchg" to "1", "step" to "9", "kind" to kind!!, "co_id" to foundCoId!!, "filename" to filename)
+                            Log.i(
+                                "MopsRepository",
+                                "[Annual] Found target link: $filename. Executing POST request..."
+                            )
+                            val postData = mapOf(
+                                "colorchg" to "1",
+                                "step" to "9",
+                                "kind" to kind!!,
+                                "co_id" to foundCoId!!,
+                                "filename" to filename
+                            )
 
                             val postResponse = apiService.postForPdfOrHtml(postData)
                             if (postResponse.isSuccessful && postResponse.body() != null) {
@@ -136,7 +182,8 @@ class MopsRepository {
                                 } else {
                                     val intermediateHtml = responseBody.string()
                                     val intermediateDoc = Jsoup.parse(intermediateHtml)
-                                    val finalPdfLinkElement = intermediateDoc.selectFirst("a[href*='.pdf']")
+                                    val finalPdfLinkElement =
+                                        intermediateDoc.selectFirst("a[href*='.pdf']")
                                     if (finalPdfLinkElement != null) {
                                         val pdfPath = finalPdfLinkElement.attr("href")
                                         val finalUrl = "$baseUrl$pdfPath"
