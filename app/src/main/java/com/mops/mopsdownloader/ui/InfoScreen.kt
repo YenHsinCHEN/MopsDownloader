@@ -9,9 +9,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.mops.mopsdownloader.R
 
 // 使用說明的頁面
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,21 +49,18 @@ fun InstructionScreen(navController: NavController) {
             InfoText(
                 title = "【批次下載】",
                 content = """
-                    - 財務報表區：點擊年份卡片可展開/收合該年份的季度選項。
+                    - 財報區：點擊年份卡片可展開/收合該年份的季度選項。
                     - 年報區：直接勾選所需年份即可。
                     - 財報與年報的選擇完全獨立，互不干擾。
                 """.trimIndent()
             )
+
+            // 文字內容現在從 strings.xml 資源檔中讀取
             InfoText(
-                title = "【智慧下載策略】",
-                content = """
-                    為保護網站伺服器及避免 IP 被封鎖，App 內建智慧下載策略：
-                    - 任務數 1-5: 快速模式 (1-2秒/個)
-                    - 任務數 6-15: 常規模式 (3-5秒/個)
-                    - 任務數 16-25: 慢速模式 (4-7秒/個)
-                    - 任務數 > 25: 禁止下載，並提示使用者減少項目。
-                """.trimIndent()
+                title = stringResource(id = R.string.instruction_strategy_title),
+                content = stringResource(id = R.string.instruction_strategy_content)
             )
+
             InfoText(
                 title = "【任務控制與背景執行】",
                 content = """
@@ -96,30 +95,14 @@ fun VersionScreen(navController: NavController) {
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            // 版本紀錄的文字也從 strings.xml 讀取
             InfoText(
-                title = "v2.0.0 (批次處理與 UI 升級)",
-                content = """
-                    - **[新功能]** 全新批次處理介面：
-                        - 財報與年報可獨立選擇不同年份。
-                        - 財報年份可展開選擇季度。
-                    - **[新功能]** 智慧下載策略：
-                        - 根據任務數量自動調整下載延遲 (1-7秒)。
-                        - 新增單次 25 個檔案的下載上限。
-                    - **[新功能]** 任務排序：下載佇列會自動依序排列。
-                    - **[新功能]** 儲存位置記憶：App 會記住使用者選擇的資料夾。
-                    - **[新功能]** 新增「使用說明」與「版本紀錄」頁面。
-                    - **[優化]** UI 頂部標題列加入作者署名。
-                    - **[優化]** 鍵盤最佳化：輸入股票代號時自動切換為數字鍵盤。
-                """.trimIndent()
+                title = stringResource(id = R.string.version_history_v2_title),
+                content = stringResource(id = R.string.version_history_v2_content)
             )
             InfoText(
-                title = "v1.0.0 (初始版本)",
-                content = """
-                    - 實現財報與年報的單檔案下載核心功能。
-                    - 採用 WorkManager 實現可靠的背景下載。
-                    - 支援取消下載與基本的 UI 介面。
-                    - 專案從 Python 桌面應用成功移植到 Android 原生平台。
-                """.trimIndent()
+                title = stringResource(id = R.string.version_history_v1_title),
+                content = stringResource(id = R.string.version_history_v1_content)
             )
         }
     }
