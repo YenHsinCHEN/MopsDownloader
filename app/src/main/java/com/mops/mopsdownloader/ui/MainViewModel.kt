@@ -10,6 +10,7 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.google.gson.Gson
+import com.mops.mopsdownloader.BuildConfig // <--- 請確保這一行是正確的
 import com.mops.mopsdownloader.data.SettingsManager
 import com.mops.mopsdownloader.worker.DownloadTask
 import com.mops.mopsdownloader.worker.DownloadWorker
@@ -107,25 +108,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             val totalTasks = tasks.size
 
-            val (delayMin, delayMax) = when {
-                totalTasks in 1..5 -> {
-                    addLog("提示：啟用快速下載模式 (1-2秒/個)。")
-                    1000L to 2000L
-                }
-                totalTasks in 6..15 -> {
-                    addLog("提示：啟用常規下載模式 (3-5秒/個)。")
-                    3000L to 5000L
-                }
-                totalTasks in 16..25 -> {
-                    addLog("提示：啟用慢速下載模式 (4-7秒/個)。")
-                    4000L to 7000L
-                }
-                else -> { // totalTasks > 25
-                    addLog("錯誤：單次下載上限為 25 個檔案，您已選擇 $totalTasks 個。")
-                    addLog("請減少勾選項目後再試。")
-                    return@launch
-                }
+            val downloadLimit = BuildConfig.MAX_DOWNLOAD_LIMIT
+
+            if (totalTasks > downloadLimit) {
+                addLog("錯誤：單次下載上限為 $downloadLimit 個檔案，您已選擇 $totalTasks 個。")
+                addLog("請減少勾選項目後再試。")
+                return@launch
             }
+
+            val (delayMin, delayMax) = getDelayStrategy(totalTasks)
+            addLogFromStrategy(totalTasks, delayMin, delayMax)
 
             tasks.sortWith(
                 compareBy<DownloadTask> { it.type }
@@ -183,5 +175,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         return tasks
+    }
+
+    private fun getDelayStrategy(totalTasks: Int): Pair<Long, Long> {
+        return when {
+            totalTasks in 1..5 -> 1000L to 2000L
+            totalTasks in 6..15 -> 3000L to 5000L
+            else -> 4000L to 7000L
+        }
+    }
+
+    private fun addLogFromStrategy(totalTasks: Int, delayMin: Long, delayMax: Long) {
+        val min = delayMin / 1000
+        val max = delayMax / 1000
+        val mode = when {
+            totalTasks in 1..5 -> "快速"
+            totalTasks in 6..15 -> "常規"
+            else -> "慢速"
+        }
+        addLog("提示：啟用${mode}下載模式 (${min}-${max}秒/個)。")
     }
 }

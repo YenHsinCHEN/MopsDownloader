@@ -27,6 +27,32 @@ android {
             )
         }
     }
+
+    // 【【【【【 以下是我們需要新增的區塊 】】【【【
+    flavorDimensions += "version" // 1. 定義一個「維度」，例如叫做 "version"
+    productFlavors {
+        // 2. 建立「商店版」風味
+        create("store") {
+            dimension = "version"
+            // 3. 為這個風味定義一個 BuildConfig 常數
+            //    名稱: MAX_DOWNLOAD_LIMIT, 型別: int, 值: 4
+            buildConfigField("int", "MAX_DOWNLOAD_LIMIT", "4")
+
+            // (可選) 為商店版設定一個不同的應用程式 ID 後綴
+            applicationIdSuffix = ".store"
+            // (可選) 為商店版設定一個不同的版本名稱後綴
+            versionNameSuffix = "-store"
+        }
+        // 4. 建立「內部版」風味
+        create("internal") {
+            dimension = "version"
+            // 5. 為內部版定義同一個常數，但給予不同的值
+            //    這裡我們用一個很大的數值來代表「無限制」
+            buildConfigField("int", "MAX_DOWNLOAD_LIMIT", "999")
+        }
+    }
+    // 【【【【【 新增結束 】】】】】
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -36,6 +62,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

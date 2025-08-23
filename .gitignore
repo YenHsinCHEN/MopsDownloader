@@ -12,4 +12,14 @@
 /captures
 .externalNativeBuild
 .cxx
+# Keystore files
+*.jks
+*.keystore
+
+# Local configuration files (important!)
+.idea/
+.gradle/
 local.properties
+
+# Build directory
+build/
