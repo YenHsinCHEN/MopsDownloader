@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 商店版的智慧下載策略說明 -->
+    <string name="instruction_strategy_title">【智慧下載策略】</string>
+    <string name="instruction_strategy_content">為確保下載過程穩定流暢，App 內建智慧型速率控制系統，會根據您設定的任務數量，自動調整處理間隔。\n\n為維持最佳執行穩定性，建議單次任務數量不要過多。</string>
+
+    <!-- 商店版的版本紀錄 -->
+    <string name="version_history_v2_title">v2.0.0 (批次處理與 UI 升級)</string>
+    <string name="version_history_v2_content">
+- **全新功能**: 引入強大的批次下載介面，您可以一次選擇多年的財報與年報。\n
+- **智慧調整**: App 會根據您的任務量自動調整處理速度，確保下載過程順暢。\n
+- **體驗優化**: 新增儲存位置記憶、取消任務確認等多項優化，操作更直覺。\n
+- **介面革新**: 重新設計了使用者介面，並新增了使用說明與版本紀錄頁面。
+    </string>
+    <string name="version_history_v1_title">v1.0.0 (初始版本)</string>
+    <string name="version_history_v1_content">
+- 首次發佈！\n
+- 提供財務報表與股東會年報的基礎下載功能。
+    </string>
+</resources>

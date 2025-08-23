@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 內部版的智慧下載策略說明 -->
+    <string name="instruction_strategy_title">【智慧下載策略 (內部版)】</string>
+    <string name="instruction_strategy_content">為保護網站伺服器及避免 IP 被封鎖，App 內建智慧下載策略：\n- 任務數 1-5: 快速模式 (1-2秒/個)\n- 任務數 6-15: 常規模式 (3-5秒/個)\n- 任務數 16-25: 慢速模式 (4-7秒/個)\n- 任務數 > 25: (商店版)禁止下載 / (內部版)無限制。</string>
+
+    <!-- 內部版的版本紀錄 -->
+    <string name="version_history_v2_title">v2.0.0 (批次處理與架構升級)</string>
+    <string name="version_history_v2_content">
+- **[新功能]** 全新批次處理介面：\n
+    - 財報與年報可獨立選擇不同年份。\n
+    - 財報年份可展開選擇季度。\n
+- **[新功能]** 智慧下載策略：\n
+    - 根據任務數量自動調整下載延遲 (1-7秒)。\n
+    - 新增單次 25 個檔案的下載上限 (商店版)。\n
+- **[新功能]** 任務排序：下載佇列會自動依序排列。\n
+- **[新功能]** 儲存位置記憶 (DataStore)。\n
+- **[新功能]** 新增「使用說明」與「版本紀錄」頁面 (Navigation)。\n
+- **[優化]** UI 頂部標題列加入作者署名。\n
+- **[優化]** 鍵盤最佳化：輸入股票代號時自動切換為數字鍵盤。
+    </string>
+    <string name="version_history_v1_title">v1.0.0 (初始版本 - 移植驗證)</string>
+    <string name="version_history_v1_content">
+- 實現財報與年報的單檔案下載核心功能。\n
+- 採用 WorkManager 實現可靠的背景序列下載。\n
+- 支援取消下載與基本的 UI 介面。\n
+- 專案從 Python 桌面應用成功移植到 Android 原生平台。
+    </string>
+</resources>
