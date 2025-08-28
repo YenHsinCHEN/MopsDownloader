@@ -17,6 +17,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.IOException
 
+
+
 object Progress {
     const val KEY = "KEY_PROGRESS"
     const val LOG = "KEY_LOG"
@@ -29,7 +31,6 @@ data class DownloadTask(
     val type: ReportType,
     val fileName: String
 )
-
 enum class ReportType {
     FINANCIAL, ANNUAL
 }
