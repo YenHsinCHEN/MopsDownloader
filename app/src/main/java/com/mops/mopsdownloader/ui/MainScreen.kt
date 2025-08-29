@@ -270,7 +270,7 @@ fun FinancialReportSettings(
             Checkbox(checked = isChecked, onCheckedChange = onCheckedChange)
             Text("📈 財務報表", style = MaterialTheme.typography.titleMedium)
         }
-        Divider()
+        HorizontalDivider()
         LazyColumn {
             items(years) { year ->
                 YearItemWithQuarters(

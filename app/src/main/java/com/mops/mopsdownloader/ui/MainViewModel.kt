@@ -10,7 +10,7 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.google.gson.Gson
-import com.mops.mopsdownloader.BuildConfig // <--- 請確保這一行是正確的
+import com.mops.mopsdownloader.BuildConfig
 import com.mops.mopsdownloader.data.SettingsManager
 import com.mops.mopsdownloader.worker.DownloadTask
 import com.mops.mopsdownloader.worker.DownloadWorker
@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
+import androidx.work.Constraints // 【【【新增 import】】】
+import androidx.work.NetworkType // 【【【新增 import】】】
 
 data class MainUiState(
     val stockCode: String = "",
@@ -158,6 +160,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             )
 
             val tasksJson = Gson().toJson(tasks)
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED) // 要求裝置必須有網路連線
+                .build()
             val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(
                     workDataOf(
@@ -167,6 +172,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         "delayMax" to delayMax
                     )
                 )
+                .setConstraints(constraints)
                 .build()
             workManager.enqueueUniqueWork("mopsDownload", ExistingWorkPolicy.REPLACE, workRequest)
             workId.value = workRequest.id

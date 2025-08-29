@@ -1,69 +1,49 @@
 # Add project specific ProGuard/R8 rules here.
-# For more details, see http://developer.android.com/guide/developing/tools/proguard.html
 
-# ------------------- General Rules for Kotlin -------------------
-# Keep metadata for reflection, which some libraries might use.
+# ------------------- General Rules for Kotlin & Coroutines -------------------
 -keep,allowobfuscation,allowshrinking class kotlin.Metadata
-
-# Keep suspend functions for Coroutines to work correctly after obfuscation.
 -keepclassmembers class **$* {
     public static final java.lang.Object invokeSuspend(java.lang.Object,java.lang.Object);
 }
+-keep class kotlinx.coroutines.internal.** { *; }
+-keepattributes Signature
 
 
 # ------------------- AndroidX WorkManager (Important!) -------------------
-# Keep the default constructor for Workers, otherwise WorkManager can't instantiate it at runtime.
--keepclassmembers public class * extends androidx.work.Worker {
-    public <init>(android.content.Context, androidx.work.WorkerParameters);
-}
 -keep public class * extends androidx.work.CoroutineWorker {
     public <init>(android.content.Context, androidx.work.WorkerParameters);
 }
 
 
-# ------------------- Retrofit & OkHttp (Comprehensive Rules) -------------------
-# Keep annotations used by Retrofit for API definitions.
--keep @retrofit2.http.* class * {*;}
--keep class retrofit2.Call
--keep class retrofit2.Callback
--keep class retrofit2.Response
+# 【【【【【 以下是本次最核心的、釜底抽薪的修改 】】】】】
+# ------------------- Complete Exemption for Networking Libraries -------------------
+# Completely exclude these libraries from any shrinking, optimization, or obfuscation.
+# This is a last resort to solve deep, environment-specific issues where R8's
+# processing interacts negatively with the system's networking or security layers.
 
-# Keep all classes in the retrofit2 package and their members.
 -keep class retrofit2.** { *; }
-
-# Keep all classes in the okhttp3 package and their members.
+-keep interface retrofit2.** { *; }
 -keep class okhttp3.** { *; }
 -keep interface okhttp3.** { *; }
+-keep class okio.** { *; }
+-keep interface okio.** { *; }
+-keep class com.google.gson.** { *; }
+-keep class org.jsoup.** { *; }
 
-# Prevent warnings from Retrofit/OkHttp about optional dependencies that we don't use.
--dontwarn com.fasterxml.jackson.databind.**
--dontwarn javax.annotation.**
--dontwarn org.conscrypt.**
+# Also, prevent any warnings from these libraries.
+-dontwarn retrofit2.**
+-dontwarn okhttp3.**
 -dontwarn okio.**
--dontwarn retrofit2.Platform$Java8
+-dontwarn com.google.gson.**
+-dontwarn org.jsoup.**
+# ------------------- 【【【 修改結束 】】】 -------------------
 
 
-# ------------------- Gson (Comprehensive Rules) -------------------
-# Keep our specific data classes and their members that are used for JSON serialization.
-# This is the most direct and safest way to protect them.
+# We still keep the specific rules for our own data classes as a good practice.
 -keep public class com.mops.mopsdownloader.worker.DownloadTask { *; }
 -keep public class com.mops.mopsdownloader.worker.ReportType { *; }
 
-# Keep GSON specific annotations.
--keep @com.google.gson.annotations.SerializedName class *
--keep @com.google.gson.annotations.Expose class *
 
-# For generic types, Gson needs to keep the signatures. This is a good general rule.
--keepclassmembers,allowobfuscation class * {
-    @com.google.gson.annotations.SerializedName <fields>;
-    @com.google.gson.annotations.Expose <fields>;
-}
-
-# Keep Gson's TypeAdapterFactory to prevent issues.
--keep class * extends com.google.gson.TypeAdapter
-
-
-# ------------------- Jsoup (Recommended Rule) -------------------
-# Jsoup uses reflection internally, so we need to prevent obfuscation of its core classes.
--keep class org.jsoup.** { *; }
--dontwarn org.jsoup.**
+# ------------------- AndroidX Core & Lifecycle (Good practice) -------------------
+-keep class androidx.lifecycle.SavedStateHandle {*;}
+-keep class androidx.lifecycle.ViewModel {*;}

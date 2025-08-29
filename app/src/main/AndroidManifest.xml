@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- 加入網路權限 -->
+
+    <!-- 1. 網路權限 (保持不變) -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 2. 前台服務權限 (舊版)。對於 targetSdk 34+，這個權限主要是為了向後相容。-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- 3. 前台服務權限 (新版 for Android 14+)。
+         我們明確聲明需要「資料同步」這個類型的前台服務權限。
+         這是解決崩潰問題的關鍵之一。-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,7 +21,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MopsDownloader">
+        android:theme="@style/Theme.MopsDownloader"
+        tools:targetApi="34"
+        android:networkSecurityConfig="@xml/network_security_config">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -19,10 +32,17 @@
             android:theme="@style/Theme.MopsDownloader">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 服務宣告，解決 InvalidForegroundServiceTypeException 崩潰問題的核心。
+             我們在這裡為 WorkManager 使用的 Service 指定了它的類型。-->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
+
     </application>
 
 </manifest>
