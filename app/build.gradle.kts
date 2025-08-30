@@ -12,15 +12,15 @@ android {
         applicationId = "com.mops.mopsdownloader"
         minSdk = 35
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.0.9"
+        versionCode = 11
+        versionName = "2.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
